@@ -721,11 +721,11 @@ class ADXIndicator(IndicatorMixin):
         self._trs[0] = diff_directional_movement.dropna()[0 : self._window].sum()
         diff_directional_movement = diff_directional_movement.reset_index(drop=True)
 
-        for i in range(1, len(self._trs) - 1):
+        for i in range(1, len(self._trs)):
             self._trs[i] = (
                 self._trs[i - 1]
                 - (self._trs[i - 1] / float(self._window))
-                + diff_directional_movement[self._window + i]
+                + diff_directional_movement[self._window + i - 1]
             )
 
         diff_up = self._high - self._high.shift(1)
@@ -738,11 +738,11 @@ class ADXIndicator(IndicatorMixin):
 
         pos = pos.reset_index(drop=True)
 
-        for i in range(1, len(self._dip) - 1):
+        for i in range(1, len(self._dip)):
             self._dip[i] = (
                 self._dip[i - 1]
                 - (self._dip[i - 1] / float(self._window))
-                + pos[self._window + i]
+                + pos[self._window + i - 1]
             )
 
         self._din = np.zeros(len(self._close) - (self._window - 1))
@@ -750,11 +750,11 @@ class ADXIndicator(IndicatorMixin):
 
         neg = neg.reset_index(drop=True)
 
-        for i in range(1, len(self._din) - 1):
+        for i in range(1, len(self._din)):
             self._din[i] = (
                 self._din[i - 1]
                 - (self._din[i - 1] / float(self._window))
-                + neg[self._window + i]
+                + neg[self._window + i - 1]
             )
 
     def adx(self) -> pd.Series:
